@@ -52,11 +52,13 @@ def create_app(test_config=None):
   @app.route('/categories', methods=['GET'])
   def get_all_categories():
       selection = Category.query.order_by(Category.id).all()
-      print('selection',selection)
-      return jsonify({'categories:get':True})
+      current_categories = [category.format() for category in selection]
 
-
-
+      return jsonify({
+         'success': True,
+         'categories': current_categories,
+         'total_categories': len(Category.query.all())
+       })
 
 
   '''
