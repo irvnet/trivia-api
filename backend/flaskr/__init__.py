@@ -75,7 +75,17 @@ def create_app(test_config=None):
   '''
   @app.route('/questions',methods=['GET'])
   def get_all_questions():
-      return jsonify({'get:questions':True})
+      selection = Question.query.order_by(Question.id).all()
+      current_questions = paginate_questions(request,selection)
+
+      if len(current_questions) == 0:
+          abort(404)
+
+      return jsonify({
+         'success': True,
+         'books': current_questions,
+         'total_books': len(Question.query.all())
+      })
 
   '''
   @TODO:
