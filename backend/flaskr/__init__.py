@@ -54,11 +54,7 @@ def create_app(test_config=None):
       selection = Category.query.order_by(Category.id).all()
       current_categories = [category.format() for category in selection]
 
-      return jsonify({
-         'categories': current_categories,
-         'success': True,
-         'total_categories': len(Category.query.all())
-       })
+      return jsonify({ 'categories': current_categories })
 
 
   '''
