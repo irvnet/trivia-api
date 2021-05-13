@@ -73,6 +73,8 @@ def create_app(test_config=None):
   def get_all_questions():
       selection = Question.query.order_by(Question.id).all()
       current_questions = paginate_questions(request,selection)
+      category_list = Category.query.order_by(Category.type).all()
+      category_rtn = [category.format() for category in category_list]
 
       if len(current_questions) == 0:
           abort(404)
@@ -80,7 +82,9 @@ def create_app(test_config=None):
       return jsonify({
          'questions': current_questions,
          'success': True,
-         'total_books': len(selection)
+         'total_books': len(selection),
+         'categories': category_rtn,
+         'current_category': True
       })
 
   '''
