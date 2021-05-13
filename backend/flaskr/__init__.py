@@ -97,6 +97,8 @@ def create_app(test_config=None):
   @app.route('/questions/<int:question_id>', methods=['DELETE'])
   def delete_question(question_id):
 
+
+      try:
          question = Question.query.filter(Question.id == question_id).one_or_none()
 
          if question is None:
@@ -113,6 +115,8 @@ def create_app(test_config=None):
            'questions': current_questions,
            'total_questions': len(Question.query.all())
          })
+      except:
+          abort(404)
 
 
 
