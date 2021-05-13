@@ -55,8 +55,8 @@ def create_app(test_config=None):
       current_categories = [category.format() for category in selection]
 
       return jsonify({
-         'success': True,
          'categories': current_categories,
+         'success': True,
          'total_categories': len(Category.query.all())
        })
 
@@ -82,8 +82,8 @@ def create_app(test_config=None):
           abort(404)
 
       return jsonify({
+         'questions': current_questions,
          'success': True,
-         'books': current_questions,
          'total_books': len(Question.query.all())
       })
 
@@ -98,7 +98,6 @@ def create_app(test_config=None):
   def delete_question(question_id):
 
          question = Question.query.filter(Question.id == question_id).one_or_none()
-         print('### DELETE Q:',question)
 
          if question is None:
              abort(404)
@@ -128,8 +127,47 @@ def create_app(test_config=None):
   of the questions list in the "List" tab.
   '''
   @app.route('/questions', methods=['POST'])
-  def create_new_question():
-      return jsonify(message='create:questions')
+  def add_new_question():
+      body = request.get_json()
+      print('### body::',body)
+
+      new_question   = body.get('question', None)
+      new_answer     = body.get('answer', None)
+      new_category   = body.get('category', None)
+      new_difficulty = body.get('difficulty', None)
+      search         = body.get('search', None)
+
+      print('search term:',search)
+
+      try:
+
+         if search:
+             selection = Question.query.order_by(Question.id).filter(Question.question.ilike('%{}%'.format(search)))
+             current_questions = paginate_questions(request, selection)
+             print('questions:',current_questions)
+
+             return jsonify({
+               'question': current_questions,
+               'success': True,
+               'found_questions': len(selection.all())
+             })
+
+         else:
+            question = Question(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty)
+            question.insert()
+
+            selection = Question.query.order_by(Question.id).all()
+            current_questions = paginate_questions(request, selection)
+
+            return jsonify({
+              'questions': current_questions,
+              'success': True,
+              'created': question.id,
+              'total_questions': len(Question.query.all())
+            })
+      except:
+         abort(422)
+
 
   '''
   @TODO:
@@ -142,9 +180,17 @@ def create_app(test_config=None):
   Try using the word "title" to start.
   '''
   #@api.route('/questions', methods=['POST'])
-  #def get_searched_questions():
-  #    return jsonify(message='post:questions')
+  #def create_question():
 
+  #    placeholder_id = 999
+  #    current_questions = []
+
+  #    return jsonify({
+  #       'success': True,
+  #       'created': placeholder_id,
+  #       'books': current_questions,
+  #       'total_books': len(Question.query.all())
+  #    })
 
   '''
   @TODO:
@@ -167,6 +213,10 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not.
   '''
+
+
+
+
 
   '''
   @TODO:
