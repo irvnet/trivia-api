@@ -82,9 +82,9 @@ def create_app(test_config=None):
       return jsonify({
          'questions': current_questions,
          'success': True,
-         'total_books': len(selection),
+         'total_questions': len(selection),
          'categories': category_rtn,
-         'current_category': True
+         'current_category': False
       })
 
   '''
@@ -197,9 +197,24 @@ def create_app(test_config=None):
   categories in the left column will cause only questions of that
   category to be shown.
   '''
-  @app.route('/quizzes', methods=['POST'])
-  def get_quizzes_by_category():
-      return jsonify({'quizzes':True}),200
+  @app.route('/categories/<int:category_id>/questions', methods=['GET'])
+  def search_questions_by_category(category_id):
+      body = request.get_json()
+
+      try:
+        selection = Question.query.filter(Question.category == str(category_id)).all()
+        current_questions = paginate_questions(request, selection)
+
+        return jsonify({
+          'question': current_questions,
+          'success': True,
+          'total_questions': len(selection),
+          'current_category': category_id
+        })
+
+      except:
+        abort(422)
+
 
   '''
   @TODO:
