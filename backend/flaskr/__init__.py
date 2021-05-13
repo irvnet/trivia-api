@@ -80,7 +80,7 @@ def create_app(test_config=None):
       return jsonify({
          'questions': current_questions,
          'success': True,
-         'total_books': len(Question.query.all())
+         'total_books': len(selection)
       })
 
   '''
