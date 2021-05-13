@@ -141,31 +141,21 @@ def create_app(test_config=None):
       search         = body.get('search', None)
 
       try:
+        question = Question(question=new_question, 
+                            answer=new_answer, 
+                            category=new_category, 
+                            difficulty=new_difficulty)
+        question.insert()
 
-         if search:
-             selection = Question.query.order_by(Question.id).filter(Question.question.ilike('%{}%'.format(search)))
-             current_questions = paginate_questions(request, selection)
-             print('questions:',current_questions)
+        selection = Question.query.order_by(Question.id).all()
+        current_questions = paginate_questions(request, selection)
 
-             return jsonify({
-               'question': current_questions,
-               'success': True,
-               'found_questions': len(selection.all())
-             })
-
-         else:
-            question = Question(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty)
-            question.insert()
-
-            selection = Question.query.order_by(Question.id).all()
-            current_questions = paginate_questions(request, selection)
-
-            return jsonify({
-              'questions': current_questions,
-              'success': True,
-              'created': question.id,
-              'total_questions': len(Question.query.all())
-            })
+        return jsonify({
+          'questions': current_questions,
+          'success': True,
+          'created': question.id,
+          'total_questions': len(Question.query.all())
+        })
       except:
          abort(422)
 
@@ -180,7 +170,7 @@ def create_app(test_config=None):
   only question that include that string within their question.
   Try using the word "title" to start.
   '''
-  @app.route('/questions', methods=['POST'])
+  @app.route('/questions/search', methods=['POST'])
   def search_questions():
       body = request.get_json()
       searchTerm = body.get('searchTerm', None)
