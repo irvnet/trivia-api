@@ -228,6 +228,25 @@ def create_app(test_config=None):
   and shown whether they were correct or not.
   '''
 
+  @app.route('/quizzes', methods=['POST'])
+  def get_quiz_for_play():
+
+      try:
+
+          body               = request.get_json()
+          category           = body.get('quiz_category')
+          previous_questions = body.get('previous_questions')
+
+          # get new questions
+          # get available questions
+
+          return jsonify({
+              'success': True,
+              'question': new_question
+          })
+      except:
+          abort(422)
+
 
 
 
