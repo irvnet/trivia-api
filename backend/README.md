@@ -153,6 +153,34 @@ Case-insensitive search returns items where question substring matches search te
 }
 ```
 
+GET `/categories/<int:category_id>/questions`
+Search returning questions by category_id
+- *Request argument:* category_id:int
+- *Example response:*
+```
+{
+  "current_category": 4,
+  "question": [
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    },
+    {
+      "answer": "Scarab",
+      "category": 4,
+      "difficulty": 4,
+      "id": 23,
+      "question": "Which dung beetle was worshipped by the ancient Egyptians?"
+    }
+  ],
+  "success": true,
+  "total_questions": 2
+}
+```
+
 
 ## Testing
 To run the tests, run

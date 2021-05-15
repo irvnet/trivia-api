@@ -194,14 +194,16 @@ def create_app(test_config=None):
       body = request.get_json()
 
       try:
+        # get questions
         selection = Question.query.filter(Question.category == str(category_id)).all()
         current_questions = paginate_questions(request, selection)
+        current_category = Category.query.filter(Category.id == str(category_id)).first()
 
         return jsonify({
           'question': current_questions,
           'success': True,
           'total_questions': len(selection),
-          'current_category': category_id
+          'current_category': current_category.type
         })
 
       except:
