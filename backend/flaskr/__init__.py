@@ -239,6 +239,7 @@ def create_app(test_config=None):
 
           # get new questions
           # get available questions
+          new_question = None
 
           return jsonify({
               'success': True,
@@ -292,5 +293,4 @@ def create_app(test_config=None):
          }), 405
 
   return app
-
-
+  
