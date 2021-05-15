@@ -84,7 +84,7 @@ def create_app(test_config=None):
          'success': True,
          'total_questions': len(selection),
          'categories': category_rtn,
-         'current_category': False
+         'current_category': None
       })
 
   '''
@@ -138,12 +138,11 @@ def create_app(test_config=None):
       new_answer     = body.get('answer', None)
       new_category   = body.get('category', None)
       new_difficulty = body.get('difficulty', None)
-      search         = body.get('search', None)
 
       try:
-        question = Question(question=new_question, 
-                            answer=new_answer, 
-                            category=new_category, 
+        question = Question(question=new_question,
+                            answer=new_answer,
+                            category=new_category,
                             difficulty=new_difficulty)
         question.insert()
 
@@ -178,11 +177,12 @@ def create_app(test_config=None):
       try:
         selection = Question.query.order_by(Question.id).filter(Question.question.ilike('%{}%'.format(searchTerm)))
         current_questions = paginate_questions(request, selection)
+
         print('questions:',current_questions)
         return jsonify({
           'question': current_questions,
           'success': True,
-          'found_questions': len(selection.all())
+          'found_questions': len(current_questions)
         })
 
       except:
