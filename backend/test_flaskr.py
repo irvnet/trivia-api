@@ -70,12 +70,9 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().delete('/questions/30')
         data = json.loads(res.data)
         book = Question.query.filter(Question.id == 30).one_or_none()
-
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(data['deleted'], 30)
-        self.assertTrue(data['questions'])
-        self.assertTrue(len(data['total_questions']))
 
     def test_404_delete_nonexistant_question(self):
         res = self.client().delete('/questions/1000')
