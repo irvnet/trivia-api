@@ -122,7 +122,16 @@ Delete an existing questions from the repository of available questions
 
 ```
 
-
+POST `/questions`
+Add a new question to the list of available questions
+- *Request body:* {question:string, answer:string, difficulty:int, category:string}
+- *Example response:* 
+```
+{
+  "created": 45, 
+  "success": true
+}
+```
 
 ## Testing
 To run the tests, run

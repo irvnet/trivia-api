@@ -64,7 +64,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(data['created'])
-        self.assertTrue(len(data['questions']))
 
     def test_delete_question(self):
         res = self.client().delete('/questions/30')
