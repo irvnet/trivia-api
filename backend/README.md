@@ -133,6 +133,27 @@ Add a new question to the list of available questions
 }
 ```
 
+POST `/questions/search`
+Case-insensitive search returns items where question substring matches search term 
+- *Request body:* {searchTerm:string}
+- *Example response:*
+```
+{
+  "found_questions": 1,
+  "question": [
+    {
+      "answer": "Escher",
+      "category": 2,
+      "difficulty": 1,
+      "id": 16,
+      "question": "Which Dutch graphic artist...?"
+    }
+  ],
+  "success": true
+}
+```
+
+
 ## Testing
 To run the tests, run
 ```
