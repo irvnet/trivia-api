@@ -36,6 +36,7 @@ def create_app(test_config=None):
   # CORS Headers
   @app.after_request
   def after_request(response):
+      response.headers.add("Access-Control-Allow-Origin", "*")
       response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
       response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
       return response
@@ -52,9 +53,11 @@ def create_app(test_config=None):
   @app.route('/categories', methods=['GET'])
   def get_all_categories():
       selection = Category.query.order_by(Category.id).all()
-      current_categories = [category.format() for category in selection]
+      category_dict = {}
+      for category in selection:
+          category_dict[category.id] = category.type
 
-      return jsonify({ 'categories': current_categories })
+      return jsonify({ 'categories': category_dict })
 
 
   '''
@@ -73,8 +76,13 @@ def create_app(test_config=None):
   def get_all_questions():
       selection = Question.query.order_by(Question.id).all()
       current_questions = paginate_questions(request,selection)
+
+
+      # grab and categories
       category_list = Category.query.order_by(Category.type).all()
-      category_rtn = [category.format() for category in category_list]
+      category_dict = {}
+      for category in category_list:
+          category_dict[category.id] = category.type
 
       if len(current_questions) == 0:
           abort(404)
@@ -83,7 +91,7 @@ def create_app(test_config=None):
          'questions': current_questions,
          'success': True,
          'total_questions': len(selection),
-         'categories': category_rtn,
+         'categories': category_dict,
          'current_category': None
       })
 
