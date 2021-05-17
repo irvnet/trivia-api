@@ -77,7 +77,6 @@ def create_app(test_config=None):
       selection = Question.query.order_by(Question.id).all()
       current_questions = paginate_questions(request,selection)
 
-
       # grab and categories
       category_list = Category.query.order_by(Category.type).all()
       category_dict = {}
@@ -175,16 +174,14 @@ def create_app(test_config=None):
       searchTerm = body.get('searchTerm', None)
 
       try:
-        selection = Question.query.order_by(Question.id).filter(Question.question.ilike('%{}%'.format(searchTerm)))
+        selection   = Question.query.filter(Question.question.ilike('%{}%'.format(searchTerm)))
         current_questions = paginate_questions(request, selection)
 
-        print('questions:',current_questions)
         return jsonify({
-          'question': current_questions,
-          'success': True,
-          'found_questions': len(current_questions)
+           'questions': current_questions,
+           'totalQuestions': len(current_questions),
+           'currentCategory': None
         })
-
       except:
          abort(422)
 
