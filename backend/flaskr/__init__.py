@@ -233,12 +233,22 @@ def create_app(test_config=None):
       try:
 
           body               = request.get_json()
+          print('### request body',body)
           category           = body.get('quiz_category')
           previous_questions = body.get('previous_questions')
 
-          # get new questions
-          # get available questions
-          new_question = None
+
+          available_questions = Question.query.filter(Question.id.notin_((previous_questions))).all()
+          print('#### (01) available_questions::', available_questions)
+
+          selected_questions = available_questions.query.filter_by(
+                    category=category['id']).filter(Question.id.notin_((previous_questions))).all()
+          print('#### (02) selected_questions::', selected_questions)
+
+          new_question = selected_questions[random.randrange(
+                0, len(selected_questions))].format() if len(selected_questions) > 0 else None
+
+          print('#### new question::', new_question)
 
           return jsonify({
               'success': True,
@@ -247,7 +257,21 @@ def create_app(test_config=None):
       except:
           abort(422)
 
-
+# POST '/quizzes'
+# - Sends a post request in order to get the next question 
+# - Request Body: 
+# {'previous_questions':  an array of question id's such as [1, 4, 20, 15]
+# 'quiz_category': a string of the current category }
+# - Returns: a single new question object 
+# {
+#     'question': {
+#         'id': 1,
+#         'question': 'This is a question',
+#         'answer': 'This is an answer', 
+#         'difficulty': 5,
+#         'category': 4
+#     }
+# }
 
 
 
