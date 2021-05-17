@@ -205,10 +205,10 @@ def create_app(test_config=None):
         current_category = Category.query.filter(Category.id == str(category_id)).first()
 
         return jsonify({
-          'question': current_questions,
+          'questions': current_questions,
           'success': True,
-          'total_questions': len(selection),
-          'current_category': current_category.type
+          'totalQuestions': len(selection),
+          'currentCategory': current_category.type
         })
 
       except:
