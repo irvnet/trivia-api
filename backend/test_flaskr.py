@@ -49,7 +49,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['total_questions'])
         self.assertTrue(data['categories'])
-        self.assertTrue(data['current_category'])
 
     def test_404_beyond_page_validation(self):
         res = self.client().get('/books?page=1000')
@@ -76,34 +75,33 @@ class TriviaTestCase(unittest.TestCase):
     def test_404_delete_nonexistant_question(self):
         res = self.client().delete('/questions/1000')
         data = json.loads(res.data)
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'resource not found')
 
     def test_get_question_search_with_results(self):
         res = self.client().post('/questions/search', json={'searchTerm': 'Dutch'})
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(data['question'])
-        self.assertEqual(len(data['found_questions']), 1)
+        self.assertTrue(data['questions'])
+        self.assertEqual(data['totalQuestions'], 1)
 
     def test_get_question_search_without_results(self):
         res = self.client().post('/questions/search', json={'searchTerm': 'DolphinStreet'})
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertFalse(data['question'])
-        self.assertEqual(data['found_questions'], 0)
+        self.assertFalse(data['questions'])
+        self.assertEqual(data['totalQuestions'], 0)
 
     def test_get_question_search_by_category(self):
         res = self.client().get('/categories/1/questions')
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(data['question'])
-        self.assertEqual(data['total_questions'], 3)
-        self.assertTrue(data['current_category'])
+        self.assertTrue(data['questions'])
+        self.assertEqual(data['totalQuestions'], 3)
+        self.assertTrue(data['currentCategory'])
 
 
     def test_play_quiz(self):

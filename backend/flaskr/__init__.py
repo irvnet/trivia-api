@@ -180,7 +180,8 @@ def create_app(test_config=None):
         return jsonify({
            'questions': current_questions,
            'totalQuestions': len(current_questions),
-           'currentCategory': 'none'
+           'currentCategory': 'none',
+           'success': True
         })
       except:
          abort(422)
@@ -237,11 +238,7 @@ def create_app(test_config=None):
           category           = body.get('quiz_category')
           previous_questions = body.get('previous_questions')
 
-
-          available_questions = Question.query.filter(Question.id.notin_((previous_questions))).all()
-          print('#### (01) available_questions::', available_questions)
-
-          selected_questions = available_questions.query.filter_by(
+          selected_questions = Question.query.filter_by(
                     category=category['id']).filter(Question.id.notin_((previous_questions))).all()
           print('#### (02) selected_questions::', selected_questions)
 
