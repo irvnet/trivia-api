@@ -51,7 +51,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['categories'])
 
     def test_404_beyond_page_validation(self):
-        res = self.client().get('/books?page=1000')
+        res = self.client().get('/questions?page=1000')
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
@@ -65,12 +65,19 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['created'])
 
     def test_delete_question(self):
-        res = self.client().delete('/questions/30')
+
+        # insert a question for delete test       
+        q = Question(question='DELETE TEST',answer='DELETE TEST',
+                     category=1,difficulty=1)
+        q.insert()
+
+        # test delete
+        delete_url = '/questions/' + str(q.id)
+        res = self.client().delete(delete_url)
         data = json.loads(res.data)
-        book = Question.query.filter(Question.id == 30).one_or_none()
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['deleted'], 30)
+        self.assertTrue(data['deleted'])
 
     def test_404_delete_nonexistant_question(self):
         res = self.client().delete('/questions/1000')
@@ -100,7 +107,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(data['questions'])
-        self.assertEqual(data['totalQuestions'], 3)
+        self.assertTrue(data['totalQuestions'])
         self.assertTrue(data['currentCategory'])
 
 
